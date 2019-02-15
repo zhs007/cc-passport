@@ -3,22 +3,15 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { Form, Input, Button, Select, Row, Col, Popover, Progress } from 'antd';
+import { Form, Input, Button, Popover, Progress } from 'antd';
 import styles from './Register.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const InputGroup = Input.Group;
 
 const passwordStatusMap = {
-  ok: (
-    <div className={styles.success}>
-      <FormattedMessage id="validation.password.strength.strong" />
-    </div>
-  ),
   pass: (
-    <div className={styles.warning}>
-      <FormattedMessage id="validation.password.strength.medium" />
+    <div className={styles.success}>
+      <FormattedMessage id="validation.password.strength.pass" />
     </div>
   ),
   poor: (
@@ -41,7 +34,7 @@ const passwordProgressMap = {
 @Form.create()
 class Register extends Component {
   state = {
-    count: 0,
+    // count: 0,
     confirmDirty: false,
     visible: false,
     help: '',
@@ -65,27 +58,13 @@ class Register extends Component {
     clearInterval(this.interval);
   }
 
-  onGetCaptcha = () => {
-    let count = 59;
-    this.setState({ count });
-    this.interval = setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
-      }
-    }, 1000);
-  };
-
   getPasswordStatus = () => {
     const { form } = this.props;
     const value = form.getFieldValue('password');
-    if (value && value.length > 9) {
-      return 'ok';
-    }
-    if (value && value.length > 5) {
+    if (value && value.length >= 8) {
       return 'pass';
     }
+
     return 'poor';
   };
 
@@ -138,7 +117,7 @@ class Register extends Component {
           visible: !!value,
         });
       }
-      if (value.length < 6) {
+      if (value.length < 8 || value.length > 20) {
         callback('error');
       } else {
         const { form } = this.props;
@@ -165,8 +144,8 @@ class Register extends Component {
         <Progress
           status={passwordProgressMap[passwordStatus]}
           className={styles.progress}
-          strokeWidth={6}
-          percent={value.length * 10 > 100 ? 100 : value.length * 10}
+          strokeWidth={8}
+          percent={value.length * 5 > 100 ? 100 : value.length * 5}
           showInfo={false}
         />
       </div>
@@ -176,7 +155,8 @@ class Register extends Component {
   render() {
     const { form, submitting } = this.props;
     const { getFieldDecorator } = form;
-    const { count, prefix, help, visible } = this.state;
+    // const { count, prefix, help, visible } = this.state;
+    const { help, visible } = this.state;
     return (
       <div className={styles.main}>
         <h3>
@@ -250,66 +230,28 @@ class Register extends Component {
             )}
           </FormItem>
           <FormItem>
-            <InputGroup compact>
-              <Select
+            {getFieldDecorator('username', {
+              rules: [
+                {
+                  required: true,
+                  message: formatMessage({ id: 'validation.username.required' }),
+                },
+                {
+                  min: 4,
+                  max: 20,
+                  message: formatMessage({ id: 'validation.username.length' }),
+                },
+                {
+                  pattern: /^[A-Za-z0-9]+$/,
+                  message: formatMessage({ id: 'validation.username.format' }),
+                },
+              ],
+            })(
+              <Input
                 size="large"
-                value={prefix}
-                onChange={this.changePrefix}
-                style={{ width: '20%' }}
-              >
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-              </Select>
-              {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'validation.phone-number.required' }),
-                  },
-                  {
-                    pattern: /^\d{11}$/,
-                    message: formatMessage({ id: 'validation.phone-number.wrong-format' }),
-                  },
-                ],
-              })(
-                <Input
-                  size="large"
-                  style={{ width: '80%' }}
-                  placeholder={formatMessage({ id: 'form.phone-number.placeholder' })}
-                />
-              )}
-            </InputGroup>
-          </FormItem>
-          <FormItem>
-            <Row gutter={8}>
-              <Col span={16}>
-                {getFieldDecorator('captcha', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.verification-code.required' }),
-                    },
-                  ],
-                })(
-                  <Input
-                    size="large"
-                    placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
-                  />
-                )}
-              </Col>
-              <Col span={8}>
-                <Button
-                  size="large"
-                  disabled={count}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetCaptcha}
-                >
-                  {count
-                    ? `${count} s`
-                    : formatMessage({ id: 'app.register.get-verification-code' })}
-                </Button>
-              </Col>
-            </Row>
+                placeholder={formatMessage({ id: 'form.username.placeholder' })}
+              />
+            )}
           </FormItem>
           <FormItem>
             <Button
