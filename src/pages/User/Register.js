@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { Form, Input, Button, Popover, Progress } from 'antd';
+import { Modal, Form, Input, Button, Popover, Progress } from 'antd';
 import styles from './Register.less';
 
 const FormItem = Form.Item;
@@ -38,19 +38,25 @@ class Register extends Component {
     confirmDirty: false,
     visible: false,
     help: '',
-    prefix: '86',
+    // prefix: '86',
+    showError: false,
+    errCode: undefined,
   };
 
   componentDidUpdate() {
     const { form, register } = this.props;
     const account = form.getFieldValue('mail');
-    if (register.status === 'ok') {
-      router.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
+    if (register.code) {
+      if (register.code === 0) {
+        router.push({
+          pathname: '/user/register-result',
+          state: {
+            account,
+          },
+        });
+      } else {
+        this.showError(register.code);
+      }
     }
   }
 
@@ -73,12 +79,15 @@ class Register extends Component {
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
       if (!err) {
-        const { prefix } = this.state;
+        this.setState({
+          errCode: undefined,
+        });
+        // const { prefix } = this.state;
         dispatch({
           type: 'register/submit',
           payload: {
             ...values,
-            prefix,
+            // prefix,
           },
         });
       }
@@ -129,10 +138,35 @@ class Register extends Component {
     }
   };
 
-  changePrefix = value => {
-    this.setState({
-      prefix: value,
-    });
+  // changePrefix = value => {
+  //   this.setState({
+  //     prefix: value,
+  //   });
+  // };
+
+  onEndErrorMsg = () => {
+    const { showError } = this.state;
+    if (showError) {
+      this.setState({
+        showError: false,
+      });
+    }
+  };
+
+  showError = errcode => {
+    const { showError, errCode } = this.state;
+    if (!showError && errCode !== errcode) {
+      Modal.error({
+        title: 'Something is wrong',
+        content: `errcode is ${errcode}`,
+        onOk: this.onEndErrorMsg,
+      });
+
+      this.setState({
+        showError: true,
+        errCode: errcode,
+      });
+    }
   };
 
   renderPasswordProgress = () => {

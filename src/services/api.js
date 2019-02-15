@@ -110,8 +110,8 @@ export async function fakeAccountLogin(params) {
   });
 }
 
-export async function fakeRegister(params) {
-  return request('/api/register', {
+export async function queryRegister(params) {
+  return request('/api/account/register', {
     method: 'POST',
     body: params,
   });
