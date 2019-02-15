@@ -23,14 +23,16 @@ class LoginPage extends Component {
   };
 
   handleSubmit = (err, values) => {
-    const { type } = this.state;
+    // const { type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
         payload: {
+          // email: values.UserName,
+          // password: values.password,
           ...values,
-          type,
+          // type,
         },
       });
     }
@@ -61,7 +63,7 @@ class LoginPage extends Component {
           }}
         >
           <UserName
-            name="EMail"
+            name="email"
             placeholder={formatMessage({ id: 'form.email.placeholder' })}
             rules={[
               {

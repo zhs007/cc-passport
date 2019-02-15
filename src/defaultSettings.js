@@ -9,6 +9,6 @@ module.exports = {
   menu: {
     disableLocal: false,
   },
-  title: 'Ant Design Pro',
+  title: 'Test',
   pwa: true,
 };

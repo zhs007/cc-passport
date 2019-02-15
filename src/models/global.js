@@ -1,4 +1,4 @@
-import { queryNotices } from '@/services/api';
+// import { queryNotices } from '@/services/api';
 
 export default {
   namespace: 'global',
@@ -10,89 +10,89 @@ export default {
   },
 
   effects: {
-    *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
-      const loadedAllNotices = data && data.length && data[data.length - 1] === null;
-      yield put({
-        type: 'setLoadedStatus',
-        payload: loadedAllNotices,
-      });
-      yield put({
-        type: 'saveNotices',
-        payload: data.filter(item => item),
-      });
-      const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      });
-    },
-    *fetchMoreNotices({ payload }, { call, put, select }) {
-      const data = yield call(queryNotices, payload);
-      const loadedAllNotices = data && data.length && data[data.length - 1] === null;
-      yield put({
-        type: 'setLoadedStatus',
-        payload: loadedAllNotices,
-      });
-      yield put({
-        type: 'pushNotices',
-        payload: data.filter(item => item),
-      });
-      const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
-      });
-    },
-    *clearNotices({ payload }, { put, select }) {
-      yield put({
-        type: 'saveClearedNotices',
-        payload,
-      });
-      const count = yield select(state => state.global.notices.length);
-      const unreadCount = yield select(
-        state => state.global.notices.filter(item => !item.read).length
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
-      });
-    },
-    *changeNoticeReadState({ payload }, { put, select }) {
-      const notices = yield select(state =>
-        state.global.notices.map(item => {
-          const notice = { ...item };
-          if (notice.id === payload) {
-            notice.read = true;
-          }
-          return notice;
-        })
-      );
-      yield put({
-        type: 'saveNotices',
-        payload: notices,
-      });
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: notices.length,
-          unreadCount: notices.filter(item => !item.read).length,
-        },
-      });
-    },
+    // *fetchNotices(_, { call, put, select }) {
+    //   const data = yield call(queryNotices);
+    //   const loadedAllNotices = data && data.length && data[data.length - 1] === null;
+    //   yield put({
+    //     type: 'setLoadedStatus',
+    //     payload: loadedAllNotices,
+    //   });
+    //   yield put({
+    //     type: 'saveNotices',
+    //     payload: data.filter(item => item),
+    //   });
+    //   const unreadCount = yield select(
+    //     state => state.global.notices.filter(item => !item.read).length
+    //   );
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: data.length,
+    //       unreadCount,
+    //     },
+    //   });
+    // },
+    // *fetchMoreNotices({ payload }, { call, put, select }) {
+    //   const data = yield call(queryNotices, payload);
+    //   const loadedAllNotices = data && data.length && data[data.length - 1] === null;
+    //   yield put({
+    //     type: 'setLoadedStatus',
+    //     payload: loadedAllNotices,
+    //   });
+    //   yield put({
+    //     type: 'pushNotices',
+    //     payload: data.filter(item => item),
+    //   });
+    //   const unreadCount = yield select(
+    //     state => state.global.notices.filter(item => !item.read).length
+    //   );
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: data.length,
+    //       unreadCount,
+    //     },
+    //   });
+    // },
+    // *clearNotices({ payload }, { put, select }) {
+    //   yield put({
+    //     type: 'saveClearedNotices',
+    //     payload,
+    //   });
+    //   const count = yield select(state => state.global.notices.length);
+    //   const unreadCount = yield select(
+    //     state => state.global.notices.filter(item => !item.read).length
+    //   );
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: count,
+    //       unreadCount,
+    //     },
+    //   });
+    // },
+    // *changeNoticeReadState({ payload }, { put, select }) {
+    //   const notices = yield select(state =>
+    //     state.global.notices.map(item => {
+    //       const notice = { ...item };
+    //       if (notice.id === payload) {
+    //         notice.read = true;
+    //       }
+    //       return notice;
+    //     })
+    //   );
+    //   yield put({
+    //     type: 'saveNotices',
+    //     payload: notices,
+    //   });
+    //   yield put({
+    //     type: 'user/changeNotifyCount',
+    //     payload: {
+    //       totalCount: notices.length,
+    //       unreadCount: notices.filter(item => !item.read).length,
+    //     },
+    //   });
+    // },
   },
 
   reducers: {

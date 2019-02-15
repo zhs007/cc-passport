@@ -103,8 +103,8 @@ export async function updateFakeList(params) {
   });
 }
 
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+export async function queryAccountLogin(params) {
+  return request('/api/account/login', {
     method: 'POST',
     body: params,
   });
@@ -117,10 +117,17 @@ export async function queryRegister(params) {
   });
 }
 
-export async function queryNotices(params = {}) {
-  return request(`/api/notices?${stringify(params)}`);
+export async function queryLogout() {
+  return request('/api/account/logout', {
+    method: 'POST',
+    body: {},
+  });
 }
 
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/captcha?mobile=${mobile}`);
-}
+// export async function queryNotices(params = {}) {
+//   return request(`/api/notices?${stringify(params)}`);
+// }
+
+// export async function getFakeCaptcha(mobile) {
+//   return request(`/api/captcha?mobile=${mobile}`);
+// }
