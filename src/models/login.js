@@ -51,8 +51,9 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
-          currentAuthority: 'guest',
+          code: -1,
+          // status: undefined,
+          // currentAuthority: 'guest',
         },
       });
       reloadAuthorized();
@@ -75,10 +76,21 @@ export default {
         setAuthority('guest');
       }
 
+      let st;
+      if (payload.code >= 0) {
+        if (payload.code === 0) {
+          st = 'ok';
+        } else {
+          st = 'error';
+        }
+      } else {
+        st = undefined;
+      }
+
       return {
         ...state,
         code: payload.code,
-        status: payload.code === 0 ? 'ok' : 'error',
+        status: st,
         type: 'account',
       };
     },
