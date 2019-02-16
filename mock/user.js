@@ -73,7 +73,7 @@ export default {
     // });
   },
   'POST /api/account/register': (req, res) => {
-    res.send({ code: 0 });
+    res.send({ code: 1 });
   },
   'GET /api/500': (req, res) => {
     res.status(500).send({

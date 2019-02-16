@@ -9,6 +9,7 @@ export default {
   namespace: 'login',
 
   state: {
+    code: 0,
     status: undefined,
   },
 
@@ -76,6 +77,7 @@ export default {
 
       return {
         ...state,
+        code: payload.code,
         status: payload.code === 0 ? 'ok' : 'error',
         type: 'account',
       };

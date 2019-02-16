@@ -6,6 +6,7 @@ export default {
   namespace: 'register',
 
   state: {
+    status: undefined,
     code: undefined,
   },
 
@@ -27,6 +28,7 @@ export default {
       reloadAuthorized();
       return {
         ...state,
+        status: payload.code === 0 ? 'ok' : 'error',
         code: payload.code,
       };
     },

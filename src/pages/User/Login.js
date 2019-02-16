@@ -16,7 +16,44 @@ class LoginPage extends Component {
   state = {
     type: 'account',
     autoLogin: true,
+    // showError: false,
+    // errCode: undefined,
   };
+
+  // componentDidUpdate() {
+  //   const { form, login } = this.props;
+  //   // const account = form.getFieldValue('mail');
+  //   if (login.code) {
+  //     if (login.code !== 0) {
+  //       this.showError(login.code);
+  //     }
+  //   }
+  // }
+
+  // onEndErrorMsg = () => {
+  //   const { showError } = this.state;
+  //   if (showError) {
+  //     this.setState({
+  //       showError: false,
+  //     });
+  //   }
+  // };
+
+  // showError = errcode => {
+  //   const { showError, errCode } = this.state;
+  //   if (!showError && errCode !== errcode) {
+  //     Modal.error({
+  //       title: 'Something is wrong',
+  //       content: `errcode is ${errcode}`,
+  //       onOk: this.onEndErrorMsg,
+  //     });
+
+  //     this.setState({
+  //       showError: true,
+  //       errCode: errcode,
+  //     });
+  //   }
+  // };
 
   onTabChange = type => {
     this.setState({ type });
@@ -49,8 +86,7 @@ class LoginPage extends Component {
   );
 
   render() {
-    // const { login, submitting } = this.props;
-    const { submitting } = this.props;
+    const { login, submitting } = this.props;
     const { type, autoLogin } = this.state;
     return (
       <div className={styles.main}>
@@ -62,6 +98,9 @@ class LoginPage extends Component {
             this.loginForm = form;
           }}
         >
+          {login.status === 'error' &&
+            !submitting &&
+            this.renderMessage(`${formatMessage({ id: 'app.login.error-code' })}${login.code}`)}
           <UserName
             name="email"
             placeholder={formatMessage({ id: 'form.email.placeholder' })}

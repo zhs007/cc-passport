@@ -3,12 +3,17 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { Modal, Form, Input, Button, Popover, Progress } from 'antd';
+import { Form, Input, Button, Popover, Progress, Alert } from 'antd';
 import styles from './Register.less';
 
 const FormItem = Form.Item;
 
 const passwordStatusMap = {
+  long: (
+    <div className={styles.error}>
+      <FormattedMessage id="validation.password.strength.long" />
+    </div>
+  ),
   pass: (
     <div className={styles.success}>
       <FormattedMessage id="validation.password.strength.pass" />
@@ -22,8 +27,9 @@ const passwordStatusMap = {
 };
 
 const passwordProgressMap = {
-  ok: 'success',
-  pass: 'normal',
+  // ok: 'success',
+  long: 'exception',
+  pass: 'success',
   poor: 'exception',
 };
 
@@ -39,24 +45,24 @@ class Register extends Component {
     visible: false,
     help: '',
     // prefix: '86',
-    showError: false,
-    errCode: undefined,
+    // showError: false,
+    // errCode: undefined,
   };
 
   componentDidUpdate() {
     const { form, register } = this.props;
     const account = form.getFieldValue('mail');
-    if (register.code) {
-      if (register.code === 0) {
-        router.push({
-          pathname: '/user/register-result',
-          state: {
-            account,
-          },
-        });
-      } else {
-        this.showError(register.code);
-      }
+    if (register.status === 'ok') {
+      // if (register.code === 0) {
+      router.push({
+        pathname: '/user/register-result',
+        state: {
+          account,
+        },
+      });
+      // } else {
+      //   this.showError(register.code);
+      // }
     }
   }
 
@@ -67,6 +73,10 @@ class Register extends Component {
   getPasswordStatus = () => {
     const { form } = this.props;
     const value = form.getFieldValue('password');
+    if (value && value.length > 20) {
+      return 'long';
+    }
+
     if (value && value.length >= 8) {
       return 'pass';
     }
@@ -79,9 +89,9 @@ class Register extends Component {
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
       if (!err) {
-        this.setState({
-          errCode: undefined,
-        });
+        // this.setState({
+        //   errCode: undefined,
+        // });
         // const { prefix } = this.state;
         dispatch({
           type: 'register/submit',
@@ -144,30 +154,30 @@ class Register extends Component {
   //   });
   // };
 
-  onEndErrorMsg = () => {
-    const { showError } = this.state;
-    if (showError) {
-      this.setState({
-        showError: false,
-      });
-    }
-  };
+  // onEndErrorMsg = () => {
+  //   const { showError } = this.state;
+  //   if (showError) {
+  //     this.setState({
+  //       showError: false,
+  //     });
+  //   }
+  // };
 
-  showError = errcode => {
-    const { showError, errCode } = this.state;
-    if (!showError && errCode !== errcode) {
-      Modal.error({
-        title: 'Something is wrong',
-        content: `errcode is ${errcode}`,
-        onOk: this.onEndErrorMsg,
-      });
+  // showError = errcode => {
+  //   const { showError, errCode } = this.state;
+  //   if (!showError && errCode !== errcode) {
+  //     Modal.error({
+  //       title: 'Something is wrong',
+  //       content: `errcode is ${errcode}`,
+  //       onOk: this.onEndErrorMsg,
+  //     });
 
-      this.setState({
-        showError: true,
-        errCode: errcode,
-      });
-    }
-  };
+  //     this.setState({
+  //       showError: true,
+  //       errCode: errcode,
+  //     });
+  //   }
+  // };
 
   renderPasswordProgress = () => {
     const { form } = this.props;
@@ -186,8 +196,12 @@ class Register extends Component {
     ) : null;
   };
 
+  renderMessage = content => (
+    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+  );
+
   render() {
-    const { form, submitting } = this.props;
+    const { form, register, submitting } = this.props;
     const { getFieldDecorator } = form;
     // const { count, prefix, help, visible } = this.state;
     const { help, visible } = this.state;
@@ -197,6 +211,11 @@ class Register extends Component {
           <FormattedMessage id="app.register.register" />
         </h3>
         <Form onSubmit={this.handleSubmit}>
+          {register.status === 'error' &&
+            !submitting &&
+            this.renderMessage(
+              `${formatMessage({ id: 'app.register.error-code' })}${register.code}`
+            )}
           <FormItem>
             {getFieldDecorator('email', {
               rules: [
