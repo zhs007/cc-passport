@@ -1,3 +1,4 @@
+# this is a example, you need edit proxy_pass!
 server {
     listen 80;
     # gzip config
@@ -13,8 +14,9 @@ server {
     location / {
         try_files $uri $uri/ /index.html;
     }
+    
     location /api {
-        proxy_pass https://preview.pro.ant.design;
+        proxy_pass http://cc-passportserv;
         proxy_set_header   X-Forwarded-Proto $scheme;
         proxy_set_header   Host              $http_host;
         proxy_set_header   X-Real-IP         $remote_addr;

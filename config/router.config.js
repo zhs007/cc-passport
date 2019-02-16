@@ -18,7 +18,7 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/account/settings' },
+      { path: '/', redirect: '/user/login' },
       {
         name: 'account',
         icon: 'user',

@@ -1,12 +1,10 @@
-FROM circleci/node:latest-browsers
+FROM node:latest
 
 WORKDIR /usr/src/app/
-USER root
+
 COPY package.json ./
-RUN yarn
+RUN npm i -dd
 
 COPY ./ ./
-
-RUN npm run test:all
 
 CMD ["npm", "run", "build"]
