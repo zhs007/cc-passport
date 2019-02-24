@@ -75,6 +75,20 @@ export default {
   'POST /api/account/register': (req, res) => {
     res.send({ code: 1 });
   },
+  'POST /api/account/checkusername': (req, res) => {
+    if (req.body.username === 'abcd') {
+      res.send({ code: 1 });
+    } else {
+      res.send({ code: 0 });
+    }
+  },
+  'POST /api/account/checkemail': (req, res) => {
+    if (req.body.email === 'abc@abc.com') {
+      res.send({ code: 1 });
+    } else {
+      res.send({ code: 0 });
+    }
+  },
   'GET /api/500': (req, res) => {
     res.status(500).send({
       timestamp: 1513932555104,

@@ -5,6 +5,7 @@ import Link from 'umi/link';
 import router from 'umi/router';
 import { Form, Input, Button, Popover, Progress, Alert } from 'antd';
 import styles from './Register.less';
+import request from '@/utils/request';
 
 const FormItem = Form.Item;
 
@@ -119,6 +120,48 @@ class Register extends Component {
     }
   };
 
+  checkEMail = (rule, value, callback) => {
+    if (!value) {
+      callback();
+    } else {
+      request('/api/account/checkemail', {
+        method: 'POST',
+        body: {
+          email: value,
+        },
+      }).then(res => {
+        // console.log(res);
+
+        if (res.code === 0) {
+          callback();
+        } else {
+          callback('exist email.');
+        }
+      });
+    }
+  };
+
+  checkUserName = (rule, value, callback) => {
+    if (!value) {
+      callback();
+    } else {
+      request('/api/account/checkusername', {
+        method: 'POST',
+        body: {
+          username: value,
+        },
+      }).then(res => {
+        // console.log(res);
+
+        if (res.code === 0) {
+          callback();
+        } else {
+          callback('exist username.');
+        }
+      });
+    }
+  };
+
   checkPassword = (rule, value, callback) => {
     const { visible, confirmDirty } = this.state;
     if (!value) {
@@ -227,6 +270,9 @@ class Register extends Component {
                   type: 'email',
                   message: formatMessage({ id: 'validation.email.wrong-format' }),
                 },
+                {
+                  validator: this.checkEMail,
+                },
               ],
             })(
               <Input size="large" placeholder={formatMessage({ id: 'form.email.placeholder' })} />
@@ -297,6 +343,9 @@ class Register extends Component {
                 {
                   pattern: /^[A-Za-z0-9]+$/,
                   message: formatMessage({ id: 'validation.username.format' }),
+                },
+                {
+                  validator: this.checkUserName,
                 },
               ],
             })(
