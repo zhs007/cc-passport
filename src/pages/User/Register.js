@@ -124,11 +124,8 @@ class Register extends Component {
     if (!value) {
       callback();
     } else {
-      request('/api/account/checkemail', {
-        method: 'POST',
-        body: {
-          email: value,
-        },
+      request(`/api/account/checkemail?email=${value}`, {
+        method: 'GET',
       }).then(res => {
         // console.log(res);
 
@@ -145,11 +142,8 @@ class Register extends Component {
     if (!value) {
       callback();
     } else {
-      request('/api/account/checkusername', {
-        method: 'POST',
-        body: {
-          username: value,
-        },
+      request(`/api/account/checkusername?username=${value}`, {
+        method: 'GET',
       }).then(res => {
         // console.log(res);
 

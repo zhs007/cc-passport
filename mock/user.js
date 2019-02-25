@@ -75,15 +75,15 @@ export default {
   'POST /api/account/register': (req, res) => {
     res.send({ code: 1 });
   },
-  'POST /api/account/checkusername': (req, res) => {
-    if (req.body.username === 'abcd') {
+  'GET /api/account/checkusername': (req, res) => {
+    if (req.query.username === 'abcd') {
       res.send({ code: 1 });
     } else {
       res.send({ code: 0 });
     }
   },
-  'POST /api/account/checkemail': (req, res) => {
-    if (req.body.email === 'abc@abc.com') {
+  'GET /api/account/checkemail': (req, res) => {
+    if (req.query.email === 'abc@abc.com') {
       res.send({ code: 1 });
     } else {
       res.send({ code: 0 });
